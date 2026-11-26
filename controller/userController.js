@@ -24,3 +24,16 @@ export const createUser = async (req, res) => {
     }
 };
 
+//Get User (GET)
+export const getUsers = async (req, res) => {
+    try {
+        const data = await fs.readFile("./db.json", "utf-8");
+        const db = JSON.parse(data);
+
+        res.status(200).json(db.users);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
