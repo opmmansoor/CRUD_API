@@ -67,3 +67,35 @@ export const deleteUser = async (req, res) => {
 };
 
 
+//Update users (PUT)
+export const updateUser = async (req, res) => {
+    try {
+        const data = await fs.readFile("./db.json", "utf-8");
+        const db = JSON.parse(data);
+
+        const id = Number(req.params.id);
+
+        const index = db.users.findIndex((user) => user.id === id);
+
+        if (index === -1) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        db.users[index] = {
+            ...db.users[index],
+            ...req.body
+        };
+
+        await fs.writeFile("./db.json", JSON.stringify(db, null, 2));
+
+        res.status(200).json({
+            message: "User updated successfully",
+            data: db.users[index]
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
